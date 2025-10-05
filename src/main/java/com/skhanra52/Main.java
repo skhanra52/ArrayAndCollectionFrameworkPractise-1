@@ -4,7 +4,14 @@ import com.skhanra52.practiceArrayList.GroceryItems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+
+final class Fruit {
+    String name;
+    Fruit(String name) { this.name = name; }
+    public String toString() { return name; }
+}
 
 public class Main {
     public static void main(String[] args) {
@@ -60,64 +67,81 @@ public class Main {
 //        for(int i=0;i<samArray.length;i++){
 //            System.out.println("Element at "+i+" "+samArray[i]);
 //        }
-        System.out.println("Random Array "+Arrays.toString(samArray));
+//        System.out.println("Random Array "+Arrays.toString(samArray));
 //************Sorting the random array*******************************
         Arrays.sort(samArray);
-        System.out.println("Sorted Array " +Arrays.toString(samArray));
+//        System.out.println("Sorted Array " +Arrays.toString(samArray));
 
 //***********filling array with particular number*********************
         Arrays.fill(samArray, 5);
-        System.out.println("Filled array "+Arrays.toString(samArray));
+//        System.out.println("Filled array "+Arrays.toString(samArray));
 
 //****************Copying an array*************************************
         int[] secondArray = getRandomArray(13);
-        System.out.println("Second array "+Arrays.toString(secondArray));
+//        System.out.println("Second array "+Arrays.toString(secondArray));
 
         int[] thirdArray = Arrays.copyOf(secondArray, secondArray.length);
-        System.out.println("Third array "+Arrays.toString(thirdArray));
-        System.out.println("Binary "+binarySearch(thirdArray, 10));
+//        System.out.println("Third array "+Arrays.toString(thirdArray));
+//        System.out.println("Binary "+binarySearch(thirdArray, 10));
         Arrays.sort(thirdArray);
-        System.out.println("Sorted third array "+Arrays.toString(thirdArray));
+//        System.out.println("Sorted third array "+Arrays.toString(thirdArray));
 //***************References vs value types: Understanding array memory and method call****
         int[] myIntArray = new int[5];
         int[] anotherArray = myIntArray;
-        System.out.println("myIntArray" +Arrays.toString(myIntArray));
-        System.out.println("anotherArray" +Arrays.toString(anotherArray));
+//        System.out.println("myIntArray" +Arrays.toString(myIntArray));
+//        System.out.println("anotherArray" +Arrays.toString(anotherArray));
 
         anotherArray[0] = 1;
         modifyArray(myIntArray);
-        System.out.println("myIntArray" +Arrays.toString(myIntArray));
-        System.out.println("anotherArray" +Arrays.toString(anotherArray));
+//        System.out.println("myIntArray" +Arrays.toString(myIntArray));
+//        System.out.println("anotherArray" +Arrays.toString(anotherArray));
 
 //**********************example of ArrayList starts here************************
         GroceryItems[] groceryItems = new GroceryItems[3];
         groceryItems[0] = new GroceryItems("milk");
         groceryItems[1] = new GroceryItems("Apple", "Product", 6);
         groceryItems[2] = new GroceryItems("Orange", "Product", 10);
-        System.out.println("Grocery Items"+Arrays.toString(groceryItems));
+//        System.out.println("Grocery Items"+Arrays.toString(groceryItems));
 
-        ArrayList<GroceryItems> objectList = getGroceryItems();
-//        System.out.println("Object list "+Arrays.toString(objectList));
-        for(GroceryItems item: objectList){
-            System.out.println("Items are: "+item);
-        }
+        ArrayList<GroceryItems> objectList = getGroceryItems(groceryItems);
+        System.out.println("Object list "+objectList);
+//        for(GroceryItems item: objectList){
+//            System.out.println("Items are: "+item);
+//        }
         System.out.println("Third element in the objectList " + objectList.get(2));
+
+        List<Fruit> list = List.of(new Fruit("Apple"), new Fruit("Banana"));
+        ArrayList<Fruit> objectListFruit = new ArrayList<>(list);
+
+        list.get(0).name = "Changed"; // modify original object
+//        list.add(new Fruit("Kiwi")); // we can not add entire element like this
+        objectListFruit.add(new Fruit("Kiwi"));
+
+        System.out.println("List "+list);
+        System.out.println("ArrayList "+objectListFruit); // [Changed, Banana] ❌ (shallow copy)
 
     }
 
-    private static ArrayList<GroceryItems> getGroceryItems() {
-        ArrayList<GroceryItems> objectList = new ArrayList<>();
+    private static ArrayList<GroceryItems> getGroceryItems(GroceryItems [] groceryItems) {
+
+//********Here is the difference between List.of(array) and Arrays.asList(array)*************
+        // ArrayList<GroceryItems> objectList = new ArrayList<>();
         // converting groceryItems which is an Array to an immutable list
         // (cannot add, remove, or replace elements).
         // No nulls allowed → if any element is null, it throws NullPointerException.
         // immutable, modern, safe for constants.
-
-//         List<GroceryItems> objectList = List.of(groceryItems);
+        // List<GroceryItems> list = List.of(groceryItems);
+        // This is how we can make it mutable by converting the immutable list to mutable ArrayList<>()
+        // ArrayList<GroceryItems> objectList = new ArrayList<>(list);
+        // or
+        // ArrayList<GroceryItems> objectList = new ArrayList<>(java.util.List.of(groceryItems));
+        //example of ******* Arrays.asList() ******************************
         // Creates a fixed-size list backed by the array.
         // We can update the list using set(index, new GroceryItems()).
         // But you cannot change the size (no add/remove)
         // fixed-size, but elements replaceable, tied to the array.
-//        List<GroceryItems> objectList = Arrays.asList(groceryItems);
+        List<GroceryItems> list = Arrays.asList(groceryItems);
+        ArrayList<GroceryItems> objectList = new ArrayList<>(list);
         objectList.add(new GroceryItems("Curd"));
         objectList.add(new GroceryItems("Banana", "PRODUCT", 50));
         objectList.add(new GroceryItems("Coconut", "PRODUCT", 100));
