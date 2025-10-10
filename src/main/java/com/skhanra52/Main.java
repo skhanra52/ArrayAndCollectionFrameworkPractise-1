@@ -2,10 +2,7 @@ package com.skhanra52;
 
 import com.skhanra52.practiceArrayList.GroceryItems;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 final class Fruit {
     String name;
@@ -120,6 +117,14 @@ public class Main {
         System.out.println("List "+list);
         System.out.println("ArrayList "+objectListFruit); // [Changed, Banana] ❌ (shallow copy)
 
+        // Sliding window example
+        List<Integer> nums = new ArrayList<>();
+        nums = List.of(-2,1,-3,4,-1,2,1,-5,4);
+//        maxSumSubSet(nums);
+//        findMinSumSubArr(nums);
+        List<Integer> samNums = List.of(2,7,11,15, 5,4);
+        towSum(samNums,9);
+
     }
 
     private static ArrayList<GroceryItems> getGroceryItems(GroceryItems [] groceryItems) {
@@ -179,5 +184,117 @@ public class Main {
 
     public static void modifyArray(int[] arr){
         arr[1] = 2;
+    }
+
+    // Sliding window patterns
+    // 1. Fixed Sliding window (commonly used if the required window size is know in advanced)
+    // commonly asked find sub_array or sub_strings of a fixed length where window_size = 3 or some other number.
+    // 2. Dynamic sliding window
+    // Find longest or shortest subArray/subString that satisfy the condition
+    // (maximum sum of sub array)
+    // Input : 3,2,-1,6,7,5);
+    // Below is the example of Dynamic Sliding window.
+//    public static void subSet(List<Integer> nums) {
+//        int maxSum = nums.get(0);
+//        List<Integer> maxArr = new ArrayList<>();
+//
+//        for (int i = 0; i < nums.size(); i++) {
+//            int currentSum = 0;
+//            List<Integer> tempArr = new ArrayList<>();
+//
+//            for (int j = i; j < nums.size(); j++) {
+//                currentSum += nums.get(j);
+//                tempArr.add(nums.get(j));
+//
+//                if (currentSum > maxSum) {
+//                    maxSum = currentSum;
+//                    maxArr = new ArrayList<>(tempArr);
+//                }
+//            }
+//        }
+//
+//        System.out.println("Max Subset Array: " + maxArr);
+//        System.out.println("Max Subset Sum: " + maxSum);
+//    }
+
+    // here is the generic template to solve fixed sliding window related problems for a
+    // window of size k.
+    // --------------------------------
+    // initialize window_sum = 0;
+    // initialize max_result (or other required value)
+    // setup initial window
+    // for i from 0 to k-1;
+    //      window_sum += arr[i];
+    // max_result = window_sum // initialize result
+    // slide the window across the array
+    // for i from k to arr.length - 1
+    //      window_sum += arr[i] - arr[i-k] // add new element and remove old element
+    //      update max_result (or other computation)
+    // return max_result;
+
+
+//---------------Kadane'S ALGORITHM--------------------------------------------------
+    // (Kadane's Algorithm) :
+    // Prefer below solution when it comes to maximum sum of sub-array or minimum sum
+    // of contiguous sub-array
+    // for maximum sum of contiguous sub-array reset the currentSum<0;
+    // for minimum sum of contiguous sub-array reset the currentSum>0;
+
+    // Input: -2,1,-3,4,-1,2,1,-5,4
+    public static void maxSumSubSet(List<Integer> nums){
+        int maxSum = nums.get(0); // initialize to max sum to 1st element
+        int currentSum = 0;
+        List<Integer> tempArr = new ArrayList<>();
+        for(int i=0;i<nums.size();i++){
+            currentSum += nums.get(i);
+            tempArr.add(nums.get(i));
+            if(maxSum<currentSum){
+                maxSum = currentSum;
+            }
+            if(currentSum < 0){
+                currentSum = 0;
+                tempArr.clear();
+            }
+            System.out.println("Temp Array "+tempArr);
+            System.out.println("Current Sum "+currentSum);
+            System.out.println("max Sum "+maxSum);
+        }
+        System.out.println("MaxSubset sum "+maxSum);
+    }
+
+    public static void findMinSumSubArr(List<Integer> nums){
+        int minSum = nums.get(0);
+        int currentSum = 0;
+        ArrayList<Integer> subArr = new ArrayList<>();
+        for(var i=0; i<nums.size(); i++){
+            currentSum += nums.get(i);
+            subArr.add(nums.get(i));
+            if(currentSum<minSum){
+                minSum = currentSum;
+            }
+            if(currentSum>0){
+                currentSum = 0;
+                subArr.clear();
+            }
+            System.out.println("Temp Array "+subArr);
+            System.out.println("Current Sum "+currentSum);
+            System.out.println("min Sum "+minSum);
+        }
+        System.out.println("Min Subset sum "+minSum);
+    }
+    // Two Sum problem using java;
+    // Input : List<Integer> samNums = List.of(2,7,11,15,5,4); target = 9;
+    public static void towSum(List<Integer> nums, int target){
+        Map<Integer, Integer> hash = new HashMap<>();
+        List<int[]>  resultPairs = new ArrayList<>();
+        for(int i=0; i<nums.size(); i++){
+            int diff = target - nums.get(i);
+            if(hash.containsKey(diff)){
+                resultPairs.add(new int[]{hash.get(diff),i});
+                System.out.println(resultPairs);
+            }
+            hash.put(nums.get(i), i);
+        }
+        System.out.println("Final Array is: "+resultPairs);
     }
 }
