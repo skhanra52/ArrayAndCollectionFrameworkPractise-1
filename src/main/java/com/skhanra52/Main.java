@@ -125,6 +125,9 @@ public class Main {
         List<Integer> samNums = List.of(2,7,11,15, 5,4);
         towSum(samNums,9);
 
+        String s = "abcbbcbb";
+        System.out.println("sub String length "+lengthOfLongestSubstring(s));
+
     }
 
     private static ArrayList<GroceryItems> getGroceryItems(GroceryItems [] groceryItems) {
@@ -232,11 +235,45 @@ public class Main {
     //      update max_result (or other computation)
     // return max_result;
 
+    // Here is the generic template to solve the dynamic sliding window related problems.
+    // For a condition like length of sub string of unique characters.
+
+    // initialize left = 0;
+    // initialize maxLength = 0;
+    // initialize Set<Character> window = new HashSet<>();
+    // for int right=0; right<s.length(); right++
+    // char current = s.charAt(right);
+    // while(window.contains(current))
+    //      window.remove(s.charAt(right));
+    //      left
+    // window.add(s.charAt(right))
+
+    public static int lengthOfLongestSubstring(String s) {
+        int left = 0;
+        int maxLength = 0;
+        Set<Character> window = new HashSet<>();
+
+        for (int right = 0; right < s.length(); right++) {
+            char current = s.charAt(right);
+
+            while (window.contains(current)) {
+                window.remove(s.charAt(left));
+                left++;
+            }
+
+            window.add(current);
+            System.out.println("left "+(left)  + " right "+right);
+            maxLength = Math.max(maxLength, right - left + 1);
+            System.out.println("maxLength " +maxLength);
+        }
+
+        return maxLength;
+    }
 
 //---------------Kadane'S ALGORITHM--------------------------------------------------
     // (Kadane's Algorithm) :
     // Prefer below solution when it comes to maximum sum of sub-array or minimum sum
-    // of contiguous sub-array
+    // of contiguous sub-array.
     // for maximum sum of contiguous sub-array reset the currentSum<0;
     // for minimum sum of contiguous sub-array reset the currentSum>0;
 
