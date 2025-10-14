@@ -123,7 +123,7 @@ public class Main {
 //        maxSumSubSet(nums);
 //        findMinSumSubArr(nums);
         List<Integer> samNums = List.of(2,7,11,15, 5,4);
-        towSum(samNums,9);
+//        towSum(samNums,9);
 
         String s = "abcbbcbb";
         System.out.println("sub String length "+lengthOfLongestSubstring(s));
@@ -234,9 +234,25 @@ public class Main {
     //      window_sum += arr[i] - arr[i-k] // add new element and remove old element
     //      update max_result (or other computation)
     // return max_result;
-
+    // --------------------------------------------------------------------
     // Here is the generic template to solve the dynamic sliding window related problems.
-    // For a condition like length of sub string of unique characters.
+    // For a condition like length of sub string of unique characters
+    // or (longest substring without repeating character).
+
+    public static int lengthOfNonRepeatingString(String str){
+        int maxLength = 0;
+        int left = 0;
+        Map<Character, Integer> window = new HashMap<>();
+        for(int right=0; right<str.length(); right++){
+            char current = str.charAt(right);
+            if(window.containsKey(current)){
+                left = Math.max(left, window.get(current) + 1);
+            }
+            window.put(current,right);
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+        return maxLength;
+    }
 
     // initialize left = 0;
     // initialize maxLength = 0;
@@ -245,26 +261,50 @@ public class Main {
     // char current = s.charAt(right);
     // while(window.contains(current))
     //      window.remove(s.charAt(right));
-    //      left
-    // window.add(s.charAt(right))
+    //      left++;
+    // window.add(s.charAt(right));
+    // update maxLength of the window
+    // return maxLength
 
+    // Using HashSet, time complexity O(n) , prefer for small input
+//    public static int lengthOfLongestSubstring(String s) {
+//        int left = 0;
+//        int maxLength = 0;
+//        Set<Character> window = new HashSet<>();
+//
+//        for (int right = 0; right < s.length(); right++) {
+//            char current = s.charAt(right);
+//
+//            while (window.contains(current)) {
+//                window.remove(s.charAt(left));
+//                left++;
+//            }
+//
+//            window.add(current);
+//            System.out.println("left "+(left)  + " right "+right);
+//            maxLength = Math.max(maxLength, right - left + 1);
+//            System.out.println("maxLength " +maxLength);
+//        }
+//
+//        return maxLength;
+//    }
+
+
+    // Using HashMet, time complexity O(n) , prefer for large input and it is faster
     public static int lengthOfLongestSubstring(String s) {
-        int left = 0;
-        int maxLength = 0;
-        Set<Character> window = new HashSet<>();
+        Map<Character, Integer> map = new HashMap<>();
+        int left = 0, maxLength = 0;
 
         for (int right = 0; right < s.length(); right++) {
-            char current = s.charAt(right);
+            char c = s.charAt(right);
 
-            while (window.contains(current)) {
-                window.remove(s.charAt(left));
-                left++;
+            if (map.containsKey(c)) {
+                // Move left pointer just after the last occurrence
+                left = Math.max(left, map.get(c) + 1);
             }
 
-            window.add(current);
-            System.out.println("left "+(left)  + " right "+right);
+            map.put(c, right);
             maxLength = Math.max(maxLength, right - left + 1);
-            System.out.println("maxLength " +maxLength);
         }
 
         return maxLength;
@@ -319,7 +359,7 @@ public class Main {
         }
         System.out.println("Min Subset sum "+minSum);
     }
-    // Two Sum problem using java;
+    // Two Sum problem using java where it should display the indexes of two matching sum;
     // Input : List<Integer> samNums = List.of(2,7,11,15,5,4); target = 9;
     public static void towSum(List<Integer> nums, int target){
         Map<Integer, Integer> hash = new HashMap<>();
