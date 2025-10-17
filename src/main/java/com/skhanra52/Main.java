@@ -1,6 +1,7 @@
 package com.skhanra52;
 
 import com.skhanra52.practiceArrayList.GroceryItems;
+import com.skhanra52.practiceArrayList.PracticeArrayList;
 
 import java.util.*;
 
@@ -12,6 +13,8 @@ final class Fruit {
 
 public class Main {
     public static void main(String[] args) {
+        PracticeArrayList instancevar = new PracticeArrayList(5,6);
+        System.out.println(instancevar.calculateSum());
 
 //******************Initializing Array and Traversing array************************
 //        int[] sampleArr = new int[6];
@@ -310,6 +313,31 @@ public class Main {
         return maxLength;
     }
 
+    // Problem: Container With Most Water LeetCode #11
+    // Problem Statement:
+    // You are given an integer array height of length n.
+    // There are n vertical lines drawn such that the two endpoints of the iᵗʰ line are (i, 0) and (i, height[i]).
+    // Find two lines that, together with the x-axis, form a container that holds the most water.
+    // Return the maximum amount of water a container can store.
+    public static double maxArea(List<Integer> heights){
+        double maxWaterContainer = 0;
+        int left = 0;
+        int right = heights.size() - 1;
+        double currentArea = 0;
+        while(left< right){
+            int currentHeight = Math.min(heights.get(left),heights.get(right));
+            int currentWidth = right - left;
+            currentArea = currentHeight * currentWidth;
+            maxWaterContainer = Math.max(maxWaterContainer, currentArea);
+            if(heights.get(left)<heights.get(right)){
+                left++;
+            }else{
+                right--;
+            }
+        }
+        return maxWaterContainer;
+    }
+
 //---------------Kadane'S ALGORITHM--------------------------------------------------
     // (Kadane's Algorithm) :
     // Prefer below solution when it comes to maximum sum of sub-array or minimum sum
@@ -361,17 +389,38 @@ public class Main {
     }
     // Two Sum problem using java where it should display the indexes of two matching sum;
     // Input : List<Integer> samNums = List.of(2,7,11,15,5,4); target = 9;
-    public static void towSum(List<Integer> nums, int target){
+    public static List<int[]> twoSumExample(List<Integer> nums, int target){
         Map<Integer, Integer> hash = new HashMap<>();
-        List<int[]>  resultPairs = new ArrayList<>();
-        for(int i=0; i<nums.size(); i++){
+        List<int[]> finalArr = new ArrayList<>();
+        for(int i=0;i<nums.size(); i++){
             int diff = target - nums.get(i);
-            if(hash.containsKey(diff)){
-                resultPairs.add(new int[]{hash.get(diff),i});
-                System.out.println(resultPairs);
+            if(!hash.containsKey(i)){
+                hash.put(nums.get(i),i);
             }
-            hash.put(nums.get(i), i);
+            finalArr.add(new int[]{hash.get(diff), i});
         }
-        System.out.println("Final Array is: "+resultPairs);
+        return finalArr;
     }
+
+
+
+
+
+
+
+
+
+//    public static void towSum(List<Integer> nums, int target){
+//        Map<Integer, Integer> hash = new HashMap<>();
+//        List<int[]>  resultPairs = new ArrayList<>();
+//        for(int i=0; i<nums.size(); i++){
+//            int diff = target - nums.get(i);
+//            if(hash.containsKey(diff)){
+//                resultPairs.add(new int[]{hash.get(diff),i});
+//                System.out.println(resultPairs);
+//            }
+//            hash.put(nums.get(i), i);
+//        }
+//        System.out.println("Final Array is: "+resultPairs);
+//    }
 }
