@@ -130,6 +130,8 @@ public class Main {
 
         String s = "abcbbcbb";
         System.out.println("sub String length "+lengthOfLongestSubstring(s));
+        System.out.println("lengthOfLongestSubstringPractice "+lengthOfLongestSubstringPractice(s));
+        System.out.println(maxAreaPractice(new int[]{2,1,3,4,1,2,1,5,4}));
 
     }
 
@@ -257,18 +259,6 @@ public class Main {
         return maxLength;
     }
 
-    // initialize left = 0;
-    // initialize maxLength = 0;
-    // initialize Set<Character> window = new HashSet<>();
-    // for int right=0; right<s.length(); right++
-    // char current = s.charAt(right);
-    // while(window.contains(current))
-    //      window.remove(s.charAt(right));
-    //      left++;
-    // window.add(s.charAt(right));
-    // update maxLength of the window
-    // return maxLength
-
     // Using HashSet, time complexity O(n) , prefer for small input
 //    public static int lengthOfLongestSubstring(String s) {
 //        int left = 0;
@@ -313,12 +303,52 @@ public class Main {
         return maxLength;
     }
 
+    public static int lengthOfLongestSubstringPractice(String s) {
+        int left = 0, maxSubArrLen = 0;
+        Map<Character, Integer> currentSub = new HashMap<>();
+        for(int right=0; right<s.length(); right++){
+            char c = s.charAt(right);
+            if(currentSub.containsKey(c)){
+                left = Math.max(left, currentSub.get(c) + 1);
+            }
+            currentSub.put(s.charAt(right), right);
+            maxSubArrLen = Math.max(maxSubArrLen, right - left + 1);
+        }
+
+        return maxSubArrLen;
+    }
+
     // Problem: Container With Most Water LeetCode #11
     // Problem Statement:
     // You are given an integer array height of length n.
     // There are n vertical lines drawn such that the two endpoints of the iᵗʰ line are (i, 0) and (i, height[i]).
     // Find two lines that, together with the x-axis, form a container that holds the most water.
     // Return the maximum amount of water a container can store.
+
+    public static double maxAreaPractice(int[] heights){
+        double maxArea = 0;
+        int left = 0;
+        int right = heights.length - 1;
+        double currentArea = 0;
+        int height = heights[0];
+        int width = 0;
+        while(left<right){
+             height = Math.min(heights[left], heights[right]);
+             width = right - left;
+            currentArea = height * width;
+            maxArea = Math.max(currentArea, maxArea);
+            if(heights[left]<heights[right]){
+                left++;
+            }else{
+                right--;
+            }
+        }
+
+        return maxArea;
+    }
+
+
+
     public static double maxArea(List<Integer> heights){
         double maxWaterContainer = 0;
         int left = 0;
@@ -389,26 +419,6 @@ public class Main {
     }
     // Two Sum problem using java where it should display the indexes of two matching sum;
     // Input : List<Integer> samNums = List.of(2,7,11,15,5,4); target = 9;
-    public static List<int[]> twoSumExample(List<Integer> nums, int target){
-        Map<Integer, Integer> hash = new HashMap<>();
-        List<int[]> finalArr = new ArrayList<>();
-        for(int i=0;i<nums.size(); i++){
-            int diff = target - nums.get(i);
-            if(!hash.containsKey(i)){
-                hash.put(nums.get(i),i);
-            }
-            finalArr.add(new int[]{hash.get(diff), i});
-        }
-        return finalArr;
-    }
-
-
-
-
-
-
-
-
 
 //    public static void towSum(List<Integer> nums, int target){
 //        Map<Integer, Integer> hash = new HashMap<>();
