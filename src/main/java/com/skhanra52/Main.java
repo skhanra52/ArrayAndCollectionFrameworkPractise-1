@@ -126,13 +126,16 @@ public class Main {
 //        maxSumSubSet(nums);
 //        findMinSumSubArr(nums);
         List<Integer> samNums = List.of(2,7,11,15, 5,4);
-//        towSum(samNums,9);
+        List<int []> targetPair = towSum(samNums,9);
+        targetPair.forEach(item -> System.out.println("Final pair" +Arrays.toString(item)));
 
         String s = "abcbbcbb";
-        System.out.println("sub String length "+lengthOfLongestSubstring(s));
-        System.out.println("lengthOfLongestSubstringPractice "+lengthOfLongestSubstringPractice(s));
-        System.out.println(maxAreaPractice(new int[]{2,1,3,4,1,2,1,5,4}));
+//        System.out.println("sub String length "+lengthOfLongestSubstring(s));
+//        System.out.println("lengthOfLongestSubstringPractice "+lengthOfLongestSubstringPractice(s));
 
+        System.out.println("minLength target 7 is "+minSubArrayLen(7, new int[]{2,3,1,2,4,3}));
+        System.out.println("minLength target 4 is "+minSubArrayLen(4, new int[]{1,4,4}));
+        System.out.println("minLength target 11 is "+minSubArrayLen(11, new int[]{1,2,3,4,5}));
     }
 
     private static ArrayList<GroceryItems> getGroceryItems(GroceryItems [] groceryItems) {
@@ -244,21 +247,6 @@ public class Main {
     // For a condition like length of sub string of unique characters
     // or (longest substring without repeating character).
 
-    public static int lengthOfNonRepeatingString(String str){
-        int maxLength = 0;
-        int left = 0;
-        Map<Character, Integer> window = new HashMap<>();
-        for(int right=0; right<str.length(); right++){
-            char current = str.charAt(right);
-            if(window.containsKey(current)){
-                left = Math.max(left, window.get(current) + 1);
-            }
-            window.put(current,right);
-            maxLength = Math.max(maxLength, right - left + 1);
-        }
-        return maxLength;
-    }
-
     // Using HashSet, time complexity O(n) , prefer for small input
 //    public static int lengthOfLongestSubstring(String s) {
 //        int left = 0;
@@ -283,7 +271,7 @@ public class Main {
 //    }
 
 
-    // Using HashMet, time complexity O(n) , prefer for large input and it is faster
+    // Using HashMep, time complexity O(n) , prefer for large input and it is faster
     public static int lengthOfLongestSubstring(String s) {
         Map<Character, Integer> map = new HashMap<>();
         int left = 0, maxLength = 0;
@@ -303,51 +291,12 @@ public class Main {
         return maxLength;
     }
 
-    public static int lengthOfLongestSubstringPractice(String s) {
-        int left = 0, maxSubArrLen = 0;
-        Map<Character, Integer> currentSub = new HashMap<>();
-        for(int right=0; right<s.length(); right++){
-            char c = s.charAt(right);
-            if(currentSub.containsKey(c)){
-                left = Math.max(left, currentSub.get(c) + 1);
-            }
-            currentSub.put(s.charAt(right), right);
-            maxSubArrLen = Math.max(maxSubArrLen, right - left + 1);
-        }
-
-        return maxSubArrLen;
-    }
-
     // Problem: Container With Most Water LeetCode #11
     // Problem Statement:
     // You are given an integer array height of length n.
     // There are n vertical lines drawn such that the two endpoints of the iᵗʰ line are (i, 0) and (i, height[i]).
     // Find two lines that, together with the x-axis, form a container that holds the most water.
     // Return the maximum amount of water a container can store.
-
-    public static double maxAreaPractice(int[] heights){
-        double maxArea = 0;
-        int left = 0;
-        int right = heights.length - 1;
-        double currentArea = 0;
-        int height = heights[0];
-        int width = 0;
-        while(left<right){
-             height = Math.min(heights[left], heights[right]);
-             width = right - left;
-            currentArea = height * width;
-            maxArea = Math.max(currentArea, maxArea);
-            if(heights[left]<heights[right]){
-                left++;
-            }else{
-                right--;
-            }
-        }
-
-        return maxArea;
-    }
-
-
 
     public static double maxArea(List<Integer> heights){
         double maxWaterContainer = 0;
@@ -366,6 +315,39 @@ public class Main {
             }
         }
         return maxWaterContainer;
+    }
+
+
+    /*209. Minimum Size Subarray Sum
+Given an array of positive integers nums and a positive integer target,
+return the minimal length of a subarray whose sum is greater than or equal to target.
+If there is no such subarray, return 0 instead.
+Example 1:
+
+Input: target = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+Example 2:
+
+Input: target = 4, nums = [1,4,4]
+Output: 1
+Example 3:
+
+Input: target = 11, nums = [1,1,1,1,1,1,1,1]
+Output: 0
+ */
+    public static int minSubArrayLen(int target, int[] nums) {
+        int minLength = Integer.MAX_VALUE, currentSum = 0, left = 0, currentLength = 0;
+        for(int right=0;right<nums.length;right++){
+            currentSum +=nums[right];
+            while(currentSum >= target) {
+                currentLength = right - left + 1;
+                minLength = Math.min(minLength, currentLength);
+                currentSum -= nums[left];
+                left++;
+            }
+        }
+        return (minLength == Integer.MAX_VALUE) ? 0 : minLength;
     }
 
 //---------------Kadane'S ALGORITHM--------------------------------------------------
@@ -420,17 +402,16 @@ public class Main {
     // Two Sum problem using java where it should display the indexes of two matching sum;
     // Input : List<Integer> samNums = List.of(2,7,11,15,5,4); target = 9;
 
-//    public static void towSum(List<Integer> nums, int target){
-//        Map<Integer, Integer> hash = new HashMap<>();
-//        List<int[]>  resultPairs = new ArrayList<>();
-//        for(int i=0; i<nums.size(); i++){
-//            int diff = target - nums.get(i);
-//            if(hash.containsKey(diff)){
-//                resultPairs.add(new int[]{hash.get(diff),i});
-//                System.out.println(resultPairs);
-//            }
-//            hash.put(nums.get(i), i);
-//        }
-//        System.out.println("Final Array is: "+resultPairs);
-//    }
+    public static List<int[]> towSum(List<Integer> nums, int target){
+        Map<Integer, Integer> hash = new HashMap<>();
+        List<int[]>  resultPairs = new ArrayList<>();
+        for(int i=0; i<nums.size(); i++){
+            int diff = target - nums.get(i);
+            if(hash.containsKey(diff)){
+                resultPairs.add(new int[]{hash.get(diff),i});
+            }
+            hash.put(nums.get(i), i);
+        }
+       return resultPairs;
+    }
 }
