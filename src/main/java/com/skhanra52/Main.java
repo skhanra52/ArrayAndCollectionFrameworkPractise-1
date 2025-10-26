@@ -133,9 +133,14 @@ public class Main {
 //        System.out.println("sub String length "+lengthOfLongestSubstring(s));
 //        System.out.println("lengthOfLongestSubstringPractice "+lengthOfLongestSubstringPractice(s));
 
-        System.out.println("minLength target 7 is "+minSubArrayLen(7, new int[]{2,3,1,2,4,3}));
-        System.out.println("minLength target 4 is "+minSubArrayLen(4, new int[]{1,4,4}));
-        System.out.println("minLength target 11 is "+minSubArrayLen(11, new int[]{1,2,3,4,5}));
+//        System.out.println("minLength target 7 is "+minSubArrayLen(7, new int[]{2,3,1,2,4,3}));
+//        System.out.println("minLength target 4 is "+minSubArrayLen(4, new int[]{1,4,4}));
+//        System.out.println("minLength target 11 is "+minSubArrayLen(11, new int[]{1,2,3,4,5}));
+        System.out.println("minLength target 7 is "+minSubArrayLenPractice(7, new int[]{2,3,1,2,4,3}));
+        System.out.println("minLength target 4 is "+minSubArrayLenPractice(4, new int[]{1,4,4}));
+        System.out.println("minLength target 11 is "+minSubArrayLenPractice(11, new int[]{1,2,3,4,5}));
+        int input = 121;
+        System.out.println("Checking Palindrome "+isPalindrome(input));
     }
 
     private static ArrayList<GroceryItems> getGroceryItems(GroceryItems [] groceryItems) {
@@ -270,6 +275,22 @@ public class Main {
 //        return maxLength;
 //    }
 
+    public static int lengthOfLongestSubstringPractice(String s){
+        int maxLength = Integer.MIN_VALUE;
+        int left = 0;
+        Map<Character, Integer> map = new HashMap<>();
+        for(int right=0;right<s.length();right++){
+            char c = s.charAt(right);
+            if(map.containsKey(c)){
+                left = Math.max(left, map.get(c) + 1);
+            }
+            map.put(c,right);
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
+    }
+
 
     // Using HashMep, time complexity O(n) , prefer for large input and it is faster
     public static int lengthOfLongestSubstring(String s) {
@@ -336,6 +357,21 @@ Example 3:
 Input: target = 11, nums = [1,1,1,1,1,1,1,1]
 Output: 0
  */
+    public static int minSubArrayLenPractice(int target, int[] nums){
+        int minLength = Integer.MAX_VALUE, left = 0, currentSum=0 ;
+
+        for(int right=0;right<nums.length;right++){
+            currentSum += nums[right];
+            while(currentSum>=target){
+                minLength = Math.min(minLength, right - left + 1);
+                currentSum -=nums[left];
+                left++;
+            }
+        }
+        return minLength;
+    }
+
+
     public static int minSubArrayLen(int target, int[] nums) {
         int minLength = Integer.MAX_VALUE, currentSum = 0, left = 0, currentLength = 0;
         for(int right=0;right<nums.length;right++){
@@ -413,5 +449,11 @@ Output: 0
             hash.put(nums.get(i), i);
         }
        return resultPairs;
+    }
+
+    public static boolean isPalindrome(int x) {
+        String reverse= new StringBuilder(String.valueOf(x)).reverse().toString();
+        return String.valueOf(x).equals(reverse);
+
     }
 }
