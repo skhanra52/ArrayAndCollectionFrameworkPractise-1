@@ -141,6 +141,8 @@ public class Main {
         System.out.println("minLength target 11 is "+minSubArrayLenPractice(11, new int[]{1,2,3,4,5}));
         int input = 121;
         System.out.println("Checking Palindrome "+isPalindrome(input));
+        String samp = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT";
+        findRepeatedDnaSequences(samp,10);
     }
 
     private static ArrayList<GroceryItems> getGroceryItems(GroceryItems [] groceryItems) {
@@ -455,5 +457,46 @@ Output: 0
         String reverse= new StringBuilder(String.valueOf(x)).reverse().toString();
         return String.valueOf(x).equals(reverse);
 
+    }
+
+    /*
+      187. Repeated DNA Sequences
+      The DNA sequence is composed of a series of nucleotides abbreviated as 'A', 'C', 'G', and 'T'.
+      For example, "ACGAATTCCG" is a DNA sequence.
+      When studying DNA, it is useful to identify repeated sequences within the DNA.
+
+      Given a string s that represents a DNA sequence, return all the 10-letter-long sequences (substrings)
+      that occur more than once in a DNA molecule. You may return the answer in any order.
+
+      Example 1:
+      Input: s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"
+      Output: ["AAAAACCCCC","CCCCCAAAAA"]
+      Example 2:
+      Input: s = "AAAAAAAAAAAAA"
+      Output: ["AAAAAAAAAA"]
+      Constraints: 1 <= s.length <= 105,
+      s[i] is either 'A', 'C', 'G', or 'T'.
+     */
+
+    public static List<String> findRepeatedDnaSequences(String s, int window){
+        if (s.length() <= window) return Collections.emptyList();
+
+        Set<String> seen = new HashSet<>();
+        Set<String> duplicates = new HashSet<>();
+
+        StringBuilder firstSubString = new StringBuilder();
+        firstSubString.append(s, 0, window);
+        seen.add(firstSubString.toString());
+        for(int right=window;right<s.length();right++){
+            firstSubString.append(s.charAt(right));
+            firstSubString.deleteCharAt(0);
+            // If already seen, it's a duplicate
+            String sequence = firstSubString.toString();
+            if (!seen.add(sequence)) {
+                duplicates.add(sequence);
+            }
+        }
+        System.out.println("FinalValue "+duplicates);
+        return new ArrayList<>(duplicates);
     }
 }
