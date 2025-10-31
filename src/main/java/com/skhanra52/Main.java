@@ -143,6 +143,7 @@ public class Main {
         System.out.println("Checking Palindrome "+isPalindrome(input));
         String samp = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT";
         findRepeatedDnaSequences(samp,10);
+        System.out.println("DNA "+findDna(samp,10));
     }
 
     private static ArrayList<GroceryItems> getGroceryItems(GroceryItems [] groceryItems) {
@@ -496,7 +497,18 @@ Output: 0
                 duplicates.add(sequence);
             }
         }
-        System.out.println("FinalValue "+duplicates);
+//        System.out.println("FinalValue "+duplicates);
         return new ArrayList<>(duplicates);
+    }
+
+    public static List<String> findDna(String s, int window){
+        Set<String> seen = new HashSet<>(), duplicate = new HashSet<>();
+        for(int i=0; i+window-1<s.length(); i++){
+            String current = s.substring(i,i+window);
+            if(!seen.add(current)){
+                duplicate.add(current);
+            }
+        }
+        return new ArrayList<>(duplicate);
     }
 }
